@@ -1,0 +1,6 @@
+.bar {
+  height: var(--bar-height);
+  width: 100%;
+  border-radius: 0.25rem 0.25rem 0 0;
+  transition: all 0.3s;
+}

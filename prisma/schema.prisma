@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                      Int              @id @default(autoincrement())
+  firstName               String
+  lastName                String
+  username                String
+  email                   String           @unique
+  password                String
+  phone                   String?
+  mainBalance             Float            @default(0)
+  investmentBalance       Float            @default(0)
+  totalEarn               Float            @default(0)
+  totalDeposit            Float            @default(0)
+  totalWithdrawals        Float            @default(0)
+  roi                     Float            @default(0)
+  redeemedRoi             Float            @default(0)
+  speedInvest             Float            @default(0)
+  completed               Float            @default(0)
+  interestBalance         Float            @default(0)
+  rewardPoints            Float            @default(0)
+  totalReferrals          Int              @default(0)
+  referredById            Int?
+  privateKeyHash          String?
+  termsAcceptedAt         DateTime?
+  termsAcceptedIP         String?
+  createdAt               DateTime         @default(now())
+  deposits                Deposit[]
+  investments             Investment[]
+  messages                Message[]
+  priceAlerts             PriceAlert[]
+  notifications           Notification[]
+  referrals               Referral[]       @relation("UserReferrals")
+  referralRewardsReceived ReferralReward[] @relation("ReferredUserRewards")
+  referralRewards         ReferralReward[] @relation("ReferrerRewards")
+  rewardLedger            RewardLedger[]
+  tickets                 Ticket[]
+  transactions            Transaction[]
+  referrer                User?            @relation("UserToUserRef", fields: [referredById], references: [id])
+  referredUsers           User[]           @relation("UserToUserRef")
+  withdrawals             Withdrawal[]
+}
+
+model Deposit {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Float
+  currency  String
+  address   String
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Investment {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  planName     String
+  planId       Int
+  roi          Float
+  duration     String
+  durationDays Int
+  amount       Float
+  startDate    DateTime  @default(now())
+  endDate      DateTime?
+  maturityDate DateTime
+  status       String    @default("Active")
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id])
+}
+
+model Transaction {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  type           String?
+  amount         Float
+  description    String?
+  status         String   @default("Success")
+  paymentMethod  String?
+  transactionRef String?
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model Withdrawal {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Float
+  address   String?
+  currency  String?
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Referral {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String   @unique
+  createdAt DateTime @default(now())
+  user      User     @relation("UserReferrals", fields: [userId], references: [id])
+}
+
+model RewardLedger {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  type        String
+  points      Float
+  description String?
+  refId       Int?
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model Ticket {
+  id        Int       @id @default(autoincrement())
+  subject   String
+  status    String    @default("open")
+  userId    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  messages  Message[]
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  senderId  Int
+  content   String
+  createdAt DateTime @default(now())
+  sender    User     @relation(fields: [senderId], references: [id])
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+}
+
+model ReferralReward {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  referredUserId Int
+  amount         Float
+  status         String    @default("PENDING")
+  createdAt      DateTime  @default(now())
+  redeemedAt     DateTime?
+  referredUser   User      @relation("ReferredUserRewards", fields: [referredUserId], references: [id])
+  referrer       User      @relation("ReferrerRewards", fields: [userId], references: [id])
+
+  @@index([userId, status])
+  @@index([referredUserId, status])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String
+  message   String
+  status    String   @default("info")
+  relatedId Int?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// =============================
+// PRICE ALERT MODEL
+// =============================
+model PriceAlert {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  asset       String // BTC, ETH, etc.
+  alertType   String // TARGET | VOLATILITY
+  value       Float // Target price or volatility threshold
+  condition   String // ABOVE | BELOW (for TARGET type)
+  active      Boolean   @default(true)
+  triggeredAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId, active])
+  @@index([asset, active])
+}

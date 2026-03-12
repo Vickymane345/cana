@@ -1,0 +1,229 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+// =============================
+// USER MODEL
+// =============================
+model User {
+  id                Int       @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  username          String
+  email             String    @unique
+  password          String
+  phone             String?
+  mainBalance       Float     @default(0)
+  investmentBalance Float     @default(0)
+  totalEarn         Float     @default(0)
+  totalDeposit      Float     @default(0)
+  totalWithdrawals  Float     @default(0)
+  roi               Float     @default(0)
+  redeemedRoi       Float     @default(0)
+  speedInvest       Float     @default(0)
+  completed         Float     @default(0)
+  interestBalance   Float     @default(0)
+  rewardPoints      Float     @default(0)
+  totalReferrals    Int       @default(0)
+  referredById      Int?
+  privateKeyHash    String?
+  termsAcceptedAt   DateTime?
+  termsAcceptedIP   String?
+  createdAt         DateTime  @default(now())
+
+  // Relations
+  deposits     Deposit[]
+  investments  Investment[]
+  transactions Transaction[]
+  withdrawals  Withdrawal[]
+
+  // Referral codes created for users (Referral rows)
+  referrals Referral[] @relation("UserReferrals")
+
+  // Self relation: a user can refer other users (separate relation name to avoid conflicts)
+  referredUsers User[] @relation("UserToUserRef")
+  referrer      User?  @relation("UserToUserRef", fields: [referredById], references: [id])
+
+  rewardLedger            RewardLedger[]
+  referralRewards         ReferralReward[] @relation("ReferrerRewards")
+  referralRewardsReceived ReferralReward[] @relation("ReferredUserRewards")
+  tickets                 Ticket[]
+  notifications           Notification[]
+  messages                Message[]
+  priceAlerts             PriceAlert[]
+}
+
+// =============================
+// DEPOSIT MODEL
+// =============================
+model Deposit {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Float
+  currency  String
+  address   String
+  status    String   @default("Pending") // Pending | Completed | Failed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =============================
+// INVESTMENT MODEL
+// =============================
+model Investment {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  user         User      @relation(fields: [userId], references: [id])
+  planName     String
+  planId       Int
+  roi          Float
+  duration     String
+  durationDays Int
+  amount       Float
+  startDate    DateTime  @default(now())
+  endDate      DateTime?
+  maturityDate DateTime
+  status       String    @default("Active") // Active | Completed
+  createdAt    DateTime  @default(now())
+}
+
+// =============================
+// TRANSACTION MODEL
+// =============================
+model Transaction {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  type           String? // deposit | withdraw | invest | roi
+  amount         Float
+  description    String?
+  status         String   @default("Success")
+  paymentMethod  String?
+  transactionRef String?
+  createdAt      DateTime @default(now())
+}
+
+// =============================
+// WITHDRAWAL MODEL
+// =============================
+model Withdrawal {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Float
+  address   String?
+  currency  String?
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+}
+
+// =============================
+// REFERRAL MODEL
+// =============================
+model Referral {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation("UserReferrals", fields: [userId], references: [id])
+  code      String   @unique
+  createdAt DateTime @default(now())
+}
+
+// =============================
+// REWARD LEDGER MODEL
+// =============================
+model RewardLedger {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  type        String // 'earned' | 'redeemed'
+  points      Float
+  description String?
+  refId       Int? // Reference to deposit/investment/transaction id
+  createdAt   DateTime @default(now())
+}
+
+// =============================
+// SUPPORT TICKET MODEL
+// =============================
+model Ticket {
+  id        Int       @id @default(autoincrement())
+  subject   String
+  status    String    @default("open")
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  messages  Message[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  senderId  Int
+  sender    User     @relation(fields: [senderId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+}
+
+// =============================
+// REFERRAL REWARD MODEL
+// =============================
+model ReferralReward {
+  id             Int       @id @default(autoincrement())
+  userId         Int // The referrer who will receive the reward
+  referredUserId Int // The user who was referred
+  amount         Float // Reward amount (e.g., $150)
+  status         String    @default("PENDING") // PENDING | REDEEMED
+  createdAt      DateTime  @default(now())
+  redeemedAt     DateTime?
+
+  // Relations
+  referrer     User @relation("ReferrerRewards", fields: [userId], references: [id])
+  referredUser User @relation("ReferredUserRewards", fields: [referredUserId], references: [id])
+
+  @@index([userId, status])
+  @@index([referredUserId, status])
+}
+
+// =============================
+// NOTIFICATION MODEL
+// =============================
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  type      String // various notification types
+  message   String
+  status    String   @default("info")
+  relatedId Int?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// =============================
+// PRICE ALERT MODEL
+// =============================
+model PriceAlert {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  asset       String // BTC, ETH, etc.
+  alertType   String // TARGET | VOLATILITY
+  value       Float // Target price or volatility threshold
+  condition   String // ABOVE | BELOW (for TARGET type)
+  active      Boolean   @default(true)
+  triggeredAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId, active])
+  @@index([asset, active])
+}
