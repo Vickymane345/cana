@@ -3,11 +3,13 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { AiOutlineThunderbolt } from "react-icons/ai";
 import logo from '@/app/assets/navbar/Tradelogo.png';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { FaChartArea, FaLock } from 'react-icons/fa';
 
 const schema = yup.object({
   firstName: yup.string().required('First name is required'),
@@ -365,9 +367,9 @@ export default function SignupPage() {
           {/* trust badges */}
           <div className="flex items-center gap-6 mt-10">
             {[
-              { icon: '🔒', label: 'Bank-grade security' },
-              { icon: '⚡', label: 'Instant deposits' },
-              { icon: '📈', label: 'Up to 55% ROI' },
+              { icon: <FaLock/>, label: 'Bank-grade security' },
+              { icon: <AiOutlineThunderbolt/>, label: 'Instant deposits' },
+              { icon: <FaChartArea/>, label: 'Up to 55% ROI' },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-2">
                 <span style={{ fontSize: '1rem' }}>{icon}</span>

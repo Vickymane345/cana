@@ -7,6 +7,8 @@ import { useAuth } from '@/components/context/AuthContext';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrivateKeyModal from '@/components/PrivateKeyModal';
+import Image from 'next/image';
+import logo from '@/app/assets/navbar/Tradelogo.png';
 import { FaGlobe, FaKey, FaShieldVirus } from 'react-icons/fa';
 
 const schema = yup.object({
@@ -172,36 +174,12 @@ export default function SigninPage() {
         >
           {/* brand mark */}
           <div className="flex items-center gap-3 mb-14">
-            <div
-              style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '10px',
-                background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M10 2L13.09 8.26L20 9.27L15 14.14L16.18 21.02L10 17.77L3.82 21.02L5 14.14L0 9.27L6.91 8.26L10 2Z"
-                  fill="white"
-                  opacity="0.92"
-                />
-              </svg>
-            </div>
-            <span
-              style={{
-                fontFamily: "'Sora', 'DM Sans', sans-serif",
-                fontWeight: 700,
-                fontSize: '1.1rem',
-                letterSpacing: '0.02em',
-                color: 'rgba(255,255,255,0.9)',
-              }}
-            >
-              TradesGlobalFX
-            </span>
+             <Image
+                      src={logo}
+                      alt="Logo"
+                      className="w-28 sm:w-32 md:w-36 h-auto"
+                      priority
+                    />
           </div>
 
           {/* illustration — secure vault / key + shield */}
