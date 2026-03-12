@@ -7,6 +7,7 @@ import { useAuth } from '@/components/context/AuthContext';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrivateKeyModal from '@/components/PrivateKeyModal';
+import { FaGlobe, FaKey, FaShieldVirus } from 'react-icons/fa';
 
 const schema = yup.object({
   email: yup.string().email('Please enter a valid email').required('Email is required'),
@@ -54,32 +55,36 @@ export default function SigninPage() {
     setPrivateKeyError('');
   };
 
-  const handlePrivateKeySubmit = async (privateKey: string) => {
-    if (!pendingUser) return;
+ const handlePrivateKeySubmit = async (privateKey: string) => {
+  if (!pendingUser) return;
 
-    setIsVerifyingKey(true);
-    setPrivateKeyError('');
+  setIsVerifyingKey(true);
+  setPrivateKeyError('');
 
-    const result = await verifyPrivateKey(pendingUser.id, privateKey);
-    setIsVerifyingKey(false);
+  const result = await verifyPrivateKey(pendingUser.id, privateKey);
+  setIsVerifyingKey(false);
 
-    if (!result.success) {
-      const newRetryCount = retryCount + 1;
-      setRetryCount(newRetryCount);
-      setPrivateKeyError(result.message || 'Invalid private key. Please try again.');
+  if (!result.success) {
+    const newRetryCount = retryCount + 1;
+    setRetryCount(newRetryCount);
+    setPrivateKeyError(result.message || 'Invalid private key. Please try again.');
 
-      if (newRetryCount >= 3) {
-        setPrivateKeyError(
-          'Maximum retry attempts reached. Please contact support for assistance.'
-        );
-      }
-      return;
+    if (newRetryCount >= 3) {
+      setPrivateKeyError(
+        'Maximum retry attempts reached. Please contact support for assistance.'
+      );
     }
+    return;
+  }
 
-    // Success - redirect to dashboard
-    setShowModal(false);
+  // SUCCESS: close modal first
+  setShowModal(false);
+
+  // small delay ensures modal unmounts before navigation
+  setTimeout(() => {
     router.push('/dashboard');
-  };
+  }, 100);
+};
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -333,9 +338,9 @@ export default function SigninPage() {
           {/* security badges */}
           <div className="flex items-center gap-6 mt-10">
             {[
-              { icon: '🛡️', label: 'End-to-end encrypted' },
-              { icon: '🔑', label: 'Private key auth' },
-              { icon: '🌐', label: 'Global access' },
+              { icon:<FaShieldVirus/> , label: 'End-to-end encrypted' },
+              { icon: <FaKey/>, label: 'Private key auth' },
+              { icon: <FaGlobe/>, label: 'Global access' },
             ].map(({ icon, label }) => (
               <div key={label} className="flex items-center gap-2">
                 <span style={{ fontSize: '1rem' }}>{icon}</span>

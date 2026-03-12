@@ -36,20 +36,19 @@ const formatMoney = (val: number) =>
   });
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+const { user, logout, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const { dashboard, isLoading, isError, mutate } = useDashboard(user?.email || null);
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/screens/auth/Signin');
-      return;
-    }
-  }, [user, router]);
-
+ useEffect(() => {
+  if (!authLoading && !user) {
+    router.push('/screens/auth/Signin');
+    return;
+  }
+}, [user, router, authLoading]);
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
