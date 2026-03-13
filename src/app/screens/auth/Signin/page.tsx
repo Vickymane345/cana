@@ -158,32 +158,44 @@ export default function SigninPage() {
       >
 
         {/* ══════════════════════════════════════════════════════════════
-            LEFT PANEL — new addition only
+            LEFT PANEL — responsive on all breakpoints
         ══════════════════════════════════════════════════════════════ */}
         <motion.div
           initial={{ opacity: 0, x: -48 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="hidden lg:flex flex-col justify-center items-start px-16 py-16"
+          className="signin-left-panel flex flex-col justify-center items-center lg:items-start
+                     px-6 py-8 sm:px-10 sm:py-10 lg:px-16 lg:py-16
+                     w-full lg:w-auto lg:flex-none"
           style={{
-            flex: '0 0 48%',
-            maxWidth: '580px',
             background: 'linear-gradient(135deg, rgba(20,33,61,0.55) 0%, rgba(7,13,36,0.25) 100%)',
-            borderRight: '1px solid rgba(255,255,255,0.06)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}
         >
+          {/* responsive override: restore sidebar layout on lg+ */}
+          <style>{`
+            @media (min-width: 1024px) {
+              .signin-left-panel {
+                flex: 0 0 48% !important;
+                max-width: 580px !important;
+                border-bottom: none !important;
+                border-right: 1px solid rgba(255,255,255,0.06) !important;
+              }
+            }
+          `}</style>
+
           {/* brand mark */}
-          <div className="flex items-center gap-3 mb-14">
-             <Image
-                      src={logo}
-                      alt="Logo"
-                      className="w-28 sm:w-32 md:w-36 h-auto"
-                      priority
-                    />
+          <div className="flex items-center gap-3 mb-6 lg:mb-14">
+            <Image
+              src={logo}
+              alt="Logo"
+              className="w-24 sm:w-28 md:w-32 lg:w-36 h-auto"
+              priority
+            />
           </div>
 
-          {/* illustration — secure vault / key + shield */}
-          <div className="w-full mb-12" style={{ maxWidth: '400px' }}>
+          {/* illustration — hidden on mobile, shown on desktop */}
+          <div className="hidden lg:block w-full mb-12" style={{ maxWidth: '400px' }}>
             <svg
               viewBox="0 0 400 320"
               fill="none"
@@ -282,13 +294,13 @@ export default function SigninPage() {
             </svg>
           </div>
 
-          {/* headline copy */}
-          <div style={{ maxWidth: '380px' }}>
+          {/* headline copy — centered on mobile, left on desktop */}
+          <div style={{ maxWidth: '380px' }} className="text-center lg:text-left">
             <h2
               style={{
                 fontFamily: "'Sora', 'DM Sans', sans-serif",
                 fontWeight: 700,
-                fontSize: '1.75rem',
+                fontSize: 'clamp(1.25rem, 3vw, 1.75rem)',
                 lineHeight: 1.25,
                 color: '#ffffff',
                 marginBottom: '0.85rem',
@@ -302,7 +314,7 @@ export default function SigninPage() {
             <p
               style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: '0.95rem',
+                fontSize: '0.9rem',
                 lineHeight: 1.65,
                 color: 'rgba(255,255,255,0.45)',
                 maxWidth: '320px',
@@ -313,8 +325,8 @@ export default function SigninPage() {
             </p>
           </div>
 
-          {/* security badges */}
-          <div className="flex items-center gap-6 mt-10">
+          {/* security badges — centered on mobile, left on desktop */}
+          <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4 lg:gap-6 mt-6 lg:mt-10">
             {[
               { icon:<FaShieldVirus/> , label: 'End-to-end encrypted' },
               { icon: <FaKey/>, label: 'Private key auth' },
@@ -341,7 +353,7 @@ export default function SigninPage() {
             RIGHT PANEL — your existing code, zero modifications
         ══════════════════════════════════════════════════════════════ */}
         <div
-          className="flex flex-col items-center justify-center flex-1 px-6 py-10"
+          className="flex flex-col items-center justify-center flex-1 px-4 sm:px-6 py-8 sm:py-10"
           style={{ minHeight: '100vh' }}
         >
 
@@ -352,9 +364,9 @@ export default function SigninPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-[#14213d]/90 backdrop-blur-sm p-8 rounded-2xl w-full max-w-md shadow-2xl"
+            className="bg-[#14213d]/90 backdrop-blur-sm p-5 sm:p-8 rounded-2xl w-full max-w-md shadow-2xl"
           >
-            <h1 className="text-3xl font-bold mb-6 text-center">Sign In</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Sign In</h1>
 
             {/* Email */}
             <div className="mb-4">

@@ -216,28 +216,40 @@ export default function SignupPage() {
           initial={{ opacity: 0, x: -48 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="hidden lg:flex flex-col justify-center items-start px-16 py-16"
+          className="left-panel flex flex-col justify-center items-center lg:items-start
+                     px-6 py-8 sm:px-10 sm:py-10 lg:px-10 xl:px-16 lg:py-16
+                     w-full lg:w-auto lg:flex-none"
           style={{
-            flex: '0 0 48%',
-            maxWidth: '580px',
             background:
               'linear-gradient(135deg, rgba(20,33,61,0.60) 0%, rgba(7,13,36,0.30) 100%)',
-            borderRight: '1px solid rgba(255,255,255,0.06)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
           }}
         >
+          {/* responsive inline style override for lg sidebar */}
+          <style>{`
+            @media (min-width: 1024px) {
+              .left-panel {
+                flex: 0 0 48% !important;
+                max-width: 580px !important;
+                border-bottom: none !important;
+                border-right: 1px solid rgba(255,255,255,0.06) !important;
+              }
+            }
+          `}</style>
+
           {/* brand mark */}
-          <div className="flex items-center gap-3 mb-12">
+          <div className="flex items-center gap-3 mb-6 lg:mb-12">
              <Image
             src={logo}
             alt="Logo"
-            className="w-28 sm:w-32 md:w-36 h-auto"
+            className="w-24 sm:w-28 md:w-32 lg:w-36 h-auto"
             priority
           />
           
           </div>
 
-          {/* main illustration */}
-          <div className="w-full mb-12" style={{ maxWidth: '420px' }}>
+          {/* main illustration — hidden on mobile, visible on desktop */}
+          <div className="hidden lg:block w-full mb-12" style={{ maxWidth: '420px' }}>
             <svg
               viewBox="0 0 420 340"
               fill="none"
@@ -334,12 +346,12 @@ export default function SignupPage() {
           </div>
 
           {/* headline copy */}
-          <div style={{ maxWidth: '400px' }}>
+          <div style={{ maxWidth: '400px' }} className="text-center lg:text-left">
             <h2
               style={{
                 fontFamily: "'Sora', 'DM Sans', sans-serif",
                 fontWeight: 700,
-                fontSize: '1.75rem',
+                fontSize: 'clamp(1.25rem, 3vw, 1.75rem)',
                 lineHeight: 1.25,
                 color: '#ffffff',
                 marginBottom: '0.85rem',
@@ -353,7 +365,7 @@ export default function SignupPage() {
             <p
               style={{
                 fontFamily: "'DM Sans', sans-serif",
-                fontSize: '0.95rem',
+                fontSize: '0.9rem',
                 lineHeight: 1.65,
                 color: 'rgba(255,255,255,0.48)',
                 maxWidth: '340px',
@@ -365,7 +377,7 @@ export default function SignupPage() {
           </div>
 
           {/* trust badges */}
-          <div className="flex items-center gap-6 mt-10">
+          <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4 xl:gap-6 mt-6 lg:mt-10">
             {[
               { icon: <FaLock/>, label: 'Bank-grade security' },
               { icon: <AiOutlineThunderbolt/>, label: 'Instant deposits' },
@@ -392,7 +404,7 @@ export default function SignupPage() {
             RIGHT PANEL — wraps existing code WITHOUT altering a single line
         ══════════════════════════════════════════════════════════════ */}
         <div
-          className="flex flex-col items-center justify-center flex-1 px-6 py-10"
+          className="flex flex-col items-center justify-center flex-1 px-4 sm:px-6 py-8 sm:py-10"
           style={{ minHeight: '100vh' }}
         >
 
@@ -402,9 +414,9 @@ export default function SignupPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}
             onSubmit={handleSubmit(onSubmit)}
-            className="bg-[#14213d]/90 backdrop-blur-sm p-8 rounded-2xl w-full max-w-md shadow-2xl"
+            className="bg-[#14213d]/90 backdrop-blur-sm p-5 sm:p-8 rounded-2xl w-full max-w-md shadow-2xl"
           >
-            <h1 className="text-3xl font-bold mb-6 text-center">Create Account</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Create Account</h1>
 
             {/* First & Last Name */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -527,14 +539,14 @@ export default function SignupPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+                className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4"
               >
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-[#14213d] text-white rounded-2xl shadow-2xl p-6 w-80 text-center border-2 ${
+                  className={`bg-[#14213d] text-white rounded-2xl shadow-2xl p-6 w-full max-w-xs text-center border-2 ${
                     modal.type === 'success' ? 'border-green-500' : 'border-red-500'
                   }`}
                 >
@@ -568,16 +580,16 @@ export default function SignupPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+                className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 py-6"
               >
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-[#14213d] text-white rounded-2xl shadow-2xl p-6 w-full max-w-3xl max-h-[80vh] overflow-y-auto"
+                  className="bg-[#14213d] text-white rounded-2xl shadow-2xl p-4 sm:p-6 w-full max-w-3xl max-h-[85vh] overflow-y-auto"
                 >
-                  <h2 className="text-2xl font-bold mb-4 text-center">Terms and Conditions</h2>
+                  <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center">Terms and Conditions</h2>
 
                   {/* REPLACED CONTENT STARTS HERE */}
                   {/* REPLACED CONTENT STARTS HERE */}
@@ -689,34 +701,34 @@ export default function SignupPage() {
                         <table className="min-w-full border border-gray-600">
                           <thead>
                             <tr className="bg-gray-800">
-                              <th className="border border-gray-600 px-4 py-2">Plan</th>
-                              <th className="border border-gray-600 px-4 py-2">Duration</th>
-                              <th className="border border-gray-600 px-4 py-2">ROI</th>
-                              <th className="border border-gray-600 px-4 py-2">Min</th>
-                              <th className="border border-gray-600 px-4 py-2">Max</th>
+                              <th className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Plan</th>
+                              <th className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Duration</th>
+                              <th className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">ROI</th>
+                              <th className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Min</th>
+                              <th className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Max</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
-                              <td className="border border-gray-600 px-4 py-2">Mining</td>
-                              <td className="border border-gray-600 px-4 py-2">30 days</td>
-                              <td className="border border-gray-600 px-4 py-2">30%</td>
-                              <td className="border border-gray-600 px-4 py-2">$1,000</td>
-                              <td className="border border-gray-600 px-4 py-2">$19,999</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Mining</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">30 days</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">30%</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">$1,000</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">$19,999</td>
                             </tr>
                             <tr>
-                              <td className="border border-gray-600 px-4 py-2">Premium</td>
-                              <td className="border border-gray-600 px-4 py-2">60 days</td>
-                              <td className="border border-gray-600 px-4 py-2">40%</td>
-                              <td className="border border-gray-600 px-4 py-2">$20,000</td>
-                              <td className="border border-gray-600 px-4 py-2">$99,999</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Premium</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">60 days</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">40%</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">$20,000</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">$99,999</td>
                             </tr>
                             <tr>
-                              <td className="border border-gray-600 px-4 py-2">Gold</td>
-                              <td className="border border-gray-600 px-4 py-2">90 days</td>
-                              <td className="border border-gray-600 px-4 py-2">55%</td>
-                              <td className="border border-gray-600 px-4 py-2">$100,000</td>
-                              <td className="border border-gray-600 px-4 py-2">$1,000,000</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">Gold</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">90 days</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">55%</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">$100,000</td>
+                              <td className="border border-gray-600 px-3 py-2 text-xs sm:text-sm">$1,000,000</td>
                             </tr>
                           </tbody>
                         </table>
@@ -1310,7 +1322,7 @@ export default function SignupPage() {
                     </label>
                   </div>
 
-                  <div className="flex justify-between">
+                  <div className="flex flex-col sm:flex-row justify-between gap-3">
                     <button
                       onClick={() => setShowTermsModal(false)}
                       className="bg-gray-500 hover:bg-gray-600 px-4 py-2 rounded font-semibold"
@@ -1341,47 +1353,47 @@ export default function SignupPage() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
+                className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4 py-6"
               >
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.8, opacity: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="bg-[#14213d] text-white rounded-2xl shadow-2xl p-6 w-full max-w-lg"
+                  className="bg-[#14213d] text-white rounded-2xl shadow-2xl p-4 sm:p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
                 >
-                  <h2 className="text-2xl font-bold mb-4 text-center text-yellow-400">
+                  <h2 className="text-xl sm:text-2xl font-bold mb-4 text-center text-yellow-400">
                     ⚠️ Important: Save Your Private Key
                   </h2>
-                  <p className="text-slate-300 mb-4">
+                  <p className="text-slate-300 mb-4 text-sm sm:text-base">
                     Your private key is crucial for account access. Please save it securely. You will
                     need it to log in.
                   </p>
                   <div className="bg-gray-800 p-4 rounded mb-4">
                     <p className="text-xs text-gray-400 mb-2">Private Key:</p>
-                    <p className="font-mono text-sm break-all">{privateKey}</p>
+                    <p className="font-mono text-xs sm:text-sm break-all">{privateKey}</p>
                   </div>
-                  <div className="flex gap-2 mb-4">
+                  <div className="flex flex-col sm:flex-row gap-2 mb-4">
                     <button
                       onClick={copyToClipboard}
-                      className="flex-1 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded font-semibold"
+                      className="flex-1 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded font-semibold text-sm sm:text-base"
                     >
                       {copied ? 'Copied!' : 'Copy to Clipboard'}
                     </button>
                     <button
                       onClick={downloadKey}
-                      className="flex-1 bg-green-500 hover:bg-green-600 px-4 py-2 rounded font-semibold"
+                      className="flex-1 bg-green-500 hover:bg-green-600 px-4 py-2 rounded font-semibold text-sm sm:text-base"
                     >
                       {downloaded ? 'Downloaded!' : 'Download as File'}
                     </button>
                   </div>
-                  <div className="flex items-center mb-6">
+                  <div className="flex items-start mb-6">
                     <input
                       type="checkbox"
                       id="understandLoss"
                       checked={understandLoss}
                       onChange={(e) => setUnderstandLoss(e.target.checked)}
-                      className="mr-2"
+                      className="mr-2 mt-0.5 shrink-0"
                     />
                     <label htmlFor="understandLoss" className="text-sm">
                       I understand that if I lose this key, I may not be able to access my account
