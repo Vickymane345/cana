@@ -8,24 +8,19 @@ import { useAssets } from '@/lib/hooks/useAssets';
 import {
   FaWallet,
   FaChartLine,
-  FaCalendarAlt,
   FaMoneyBillWave,
-  FaEye,
   FaCoins,
   FaCheckCircle,
   FaClock,
   FaExclamationTriangle,
 } from 'react-icons/fa';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
-import NotificationButton from '@/components/NotificationButton';
-import { FaUserCircle } from 'react-icons/fa';
 import Image from 'next/image';
 import logo from '@/app/assets/navbar/Tradelogo.png';
 import PortfolioDonut from '@/components/PortfolioDonut';
 import ROIProjectionChart from '@/components/ROIProjectionChart';
 import PortfolioHealth from '@/components/PortfolioHealth';
 
-// Format money
 const formatMoney = (val: number) =>
   val?.toLocaleString('en-US', {
     minimumFractionDigits: 2,
@@ -33,17 +28,31 @@ const formatMoney = (val: number) =>
   });
 
 export default function AssetsPage() {
-  const { user, logout } = useAuth();
+  // ✅ FIX: pull isLoading from auth context and rename to authLoading
+  const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const { assets, isLoading, isError, mutate } = useAssets(user?.email || null);
   const [activeTab, setActiveTab] = useState<'active' | 'completed'>('active');
 
   useEffect(() => {
-    if (!user) {
+    // ✅ FIX: only redirect AFTER auth has finished reading from localStorage.
+    // Without !authLoading, user is null for ~1 render tick while the context
+    // hydrates from localStorage — causing an immediate false redirect to sign-in.
+    if (!authLoading && !user) {
       router.push('/screens/auth/Signin');
-      return;
     }
-  }, [user, router]);
+  }, [authLoading, user, router]);
+
+  // Show spinner while auth context is still hydrating
+  if (authLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen bg-[#0b1130] text-white space-y-6">
+        <AiOutlineLoading3Quarters className="animate-spin" size={40} />
+        <Image src={logo} alt="Trades Global FX" width={160} height={60} />
+        <p className="text-slate-400 text-sm">Loading...</p>
+      </div>
+    );
+  }
 
   if (!user)
     return (
@@ -127,7 +136,6 @@ export default function AssetsPage() {
                   </div>
                 </td>
                 <td className="py-3 px-4">${formatMoney(inv.amount)}</td>
-             
                 <td className="py-3 px-4">{new Date(inv.startDate).toLocaleDateString()}</td>
                 {type === 'active' && (
                   <td className="py-3 px-4">{new Date(inv.maturityDate).toLocaleDateString()}</td>
@@ -160,8 +168,8 @@ export default function AssetsPage() {
     <div className="flex flex-col md:flex-row min-h-screen overflow-x-hidden">
       <Sidebar />
 
-      <main className="flex-1 p-4 sm:p-6 md:p-8 bg-[#0b1130] text-slate-200 relative">
-        {/* Header */}
+      {/* pb-20 on mobile gives space above the fixed bottom tab bar */}
+      <main className="flex-1 p-4 sm:p-6 md:p-8 bg-[#0b1130] text-slate-200 relative pb-20 md:pb-8">
         <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
           <h1 className="text-2xl md:text-3xl font-semibold">My Assets</h1>
         </div>
@@ -273,26 +281,24 @@ export default function AssetsPage() {
             </button>
           </div>
 
-          <div>
-            <div className="bg-[#0f274f] rounded-xl p-6">
-              {activeTab === 'active' ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <FaClock className="text-blue-400" />
-                    Active Investments
-                  </h3>
-                  {renderInvestmentTable(Object.values(activeInvestments).flat(), 'active')}
-                </div>
-              ) : (
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                    <FaCheckCircle className="text-green-400" />
-                    Completed Investments
-                  </h3>
-                  {renderInvestmentTable(Object.values(completedInvestments).flat(), 'completed')}
-                </div>
-              )}
-            </div>
+          <div className="bg-[#0f274f] rounded-xl p-6">
+            {activeTab === 'active' ? (
+              <div>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <FaClock className="text-blue-400" />
+                  Active Investments
+                </h3>
+                {renderInvestmentTable(Object.values(activeInvestments).flat(), 'active')}
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <FaCheckCircle className="text-green-400" />
+                  Completed Investments
+                </h3>
+                {renderInvestmentTable(Object.values(completedInvestments).flat(), 'completed')}
+              </div>
+            )}
           </div>
         </section>
 
