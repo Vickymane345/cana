@@ -1,8 +1,8 @@
-import image1 from "@/app/assets/wallets/btc.png";
-import image2 from "@/app/assets/wallets/tether.png";
-import image3 from "@/app/assets/wallets/etherium.png";
-import image4 from "@/app/assets/wallets/xrp.png";
-import image5 from "@/app/assets/wallets/solana.jpg";
+import image1 from "@/app/assets/btc.png";
+import image2 from "@/app/assets/tether.png";
+import image3 from "@/app/assets/etherium.png";
+import image4 from "@/app/assets/xrp.png";
+import image5 from "@/app/assets/solana.jpg";
 export const WALLETS = [
   {
     name: 'Bitcoin',
