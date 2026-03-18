@@ -1,45 +1,46 @@
 import React from 'react'
+import { FaLightbulb, FaLock, FaHandshake, FaCog, FaTrophy, FaHeadset } from "react-icons/fa";
 
-function AboutCard()
-{
-      const values = [
-        {
-          title: "Innovative Solutions",
-          description:
-            "We stand out by offering unique, high-return investment plans designed for both short-term and long-term growth.",
-          icon: "💡",
-        },
-        {
-          title: "Commitment to Security",
-          description:
-            "We go above and beyond to protect your funds through advanced encryption and security practices.",
-          icon: "🔒",
-        },
-        {
-          title: "Integrity",
-          description:
-            "We believe in transparency and honesty with our clients. Trust is the foundation of our business.",
-          icon: "🤝",
-        },
-        {
-          title: "Innovation",
-          description:
-            "We continually develop new tools and strategies to help our clients stay ahead of the curve.",
-          icon: "⚙️",
-        },
-        {
-          title: "Excellence",
-          description:
-            "We’re committed to delivering exceptional service and exceeding expectations every time.",
-          icon: "🏆",
-        },
-        {
-          title: "Customer Support",
-          description:
-            "We’re always here to help with setting up accounts, managing investments, and resolving inquiries.",
-          icon: "🙋‍♂️",
-        },
-      ];
+function AboutCard() {
+  const values = [
+    {
+      title: "Innovative Solutions",
+      description:
+        "We stand out by offering unique, high-return investment plans designed for both short-term and long-term growth.",
+      icon: <FaLightbulb />,
+    },
+    {
+      title: "Commitment to Security",
+      description:
+        "We go above and beyond to protect your funds through advanced encryption and security practices.",
+      icon: <FaLock />,
+    },
+    {
+      title: "Integrity",
+      description:
+        "We believe in transparency and honesty with our clients. Trust is the foundation of our business.",
+      icon: <FaHandshake />,
+    },
+    {
+      title: "Innovation",
+      description:
+        "We continually develop new tools and strategies to help our clients stay ahead of the curve.",
+      icon: <FaCog />,
+    },
+    {
+      title: "Excellence",
+      description:
+        "We're committed to delivering exceptional service and exceeding expectations every time.",
+      icon: <FaTrophy />,
+    },
+    {
+      title: "Customer Support",
+      description:
+        "We're always here to help with setting up accounts, managing investments, and resolving inquiries.",
+      icon: <FaHeadset />,
+    },
+  ];
+
   return (
     <div>
       <section className="px-6 md:px-20 py-20 text-center">
