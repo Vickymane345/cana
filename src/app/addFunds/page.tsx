@@ -8,6 +8,7 @@ import { useDeposits } from '@/lib/hooks/useDeposits';
 import { addFundsSchema } from '@/lib/validation';
 import { WALLETS } from '@/lib/config';
 import { formatWithCommas, unformat } from '@/lib/utils/formatAmount';
+import Image from 'next/image';
 
 // Add comma formatting
 const formatMoney = (val: number) =>
@@ -101,7 +102,7 @@ export default function AddFundsPage() {
               className="bg-[#162446] p-6 rounded-xl flex flex-col items-center shadow-lg hover:scale-105 transition-transform duration-200"
             >
               <div className="w-20 h-20 rounded bg-slate-800 mb-4 flex items-center justify-center text-lg">
-                {w.symbol}
+                <Image src={w.symbol} alt={w.name} className="w-12 h-12 object-contain" />
               </div>
               <h3 className="font-semibold mb-1 text-center">{w.name}</h3>
               <button
